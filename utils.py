@@ -1,16 +1,12 @@
 from const import *
 import requests
 
-def random_proxy(url, params={}):
+def get_requests(url, params={}):
     if params:
         url += '?'
         for key, value in params.items():
             url += f'{key}={value}&'
-    payload = {
-        "api_key": SCRAPER_API_KEY,
-        "url": url,
-    }
-    response = requests.get("http://api.scraperapi.com", params = payload)
+    response = requests.get(url)
     return response
 
 # Remove tab and right space

@@ -15,7 +15,7 @@ pip install virtualenv
 virtualenv venv
 source venv/Scripts/activate
 ```
-3. Add `SCRAPER_API_KEY` value in `const.py`.
+3. Add `CH_FREEHOTDEAL_FMKOREA_ID` and `TOKEN` value in `const.py`.
 4. Install the requirements.
 ```git bash
 pip install -r requirements.txt
