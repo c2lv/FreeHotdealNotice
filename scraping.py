@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 from utils import *
 from bs4 import BeautifulSoup
 import re
@@ -7,9 +7,7 @@ def scraping():
     ret = []
     finish = False
     i = 1
-    now = datetime.now()  
-    timegap = timedelta(minutes = 5)
-    before = now - timegap
+    now = datetime.now()
 
     while True:
         response = get_requests(PROTOCOL_AND_DOMAIN + PATH, {'mid': 'hotdeal', 'page': i})
@@ -18,23 +16,30 @@ def scraping():
             soup = BeautifulSoup(html, 'html.parser')
             posts = soup.find_all('li', {"class":["li", "li_best2_pop0", "li_best2_hotdeal0"]})
             for post in posts:
+                ''' 5분 이내로 작성된 글만 스크래핑 '''
                 regdate = post.find('span', {"class":"regdate"})
                 regdate = remove_tab(regdate.text)
-                regdate = before.replace(hour = int(regdate[:2]), minute = int(regdate[3:5]))
-                before_str = before.strftime('%H:%M')
-                regdate_str = regdate.strftime('%H:%M')
-                if before_str == '00:05' and regdate_str[:2] != '00' \
-                or regdate < before:
+                reg_hour = int(regdate[:2])
+                reg_minute = int(regdate[3:5])
+                if regdate[4] == '.': # 24시간 이상 지난 글이면
                     finish = True
                     break
+                if now.minute == 0 and \
+                not ((now.hour == 0 and (((reg_hour == 23) and (55 < reg_minute < 60)) or ((reg_hour == 0) and (reg_minute == 0)))) \
+                or ((reg_hour == now.hour - 1) and (55 < reg_minute < 60)) \
+                or ((reg_hour == now.hour) and (reg_minute == 0))): # 지금이 0분일 때
+                    finish = True
+                    break
+                else: # 지금이 5~55분일 때
+                    if not (now.hour == reg_hour and now.minute - 5 < reg_minute):
+                        finish = True
+                        break
+
                 info = post.find_all('a', {"class":"strong"})
                 price = info[1].text # 가격
                 mall = info[0].text # 쇼핑몰
                 delivery_fee = info[2].text # 배송비
-                if price == '0원' \
-                or price == '공짜' \
-                or '무' in price \
-                or 'x' in price: # 가격이 0원이면
+                if price == '0원' or price == '공짜' or '무' in price or 'x' in price: # 가격이 0원이면
                     # 종료된 핫딜은 'hotdeal_var8Y' class이므로 해당 if문에서 필터링
                     if post.find('a', {"class":"hotdeal_var8"}): # If object is not NoneType
                         title = post.find('a', {"class":"hotdeal_var8"})
