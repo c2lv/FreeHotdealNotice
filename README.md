@@ -1,6 +1,7 @@
 #  무료 핫딜 공지 프로그램(FreeHotdealNotice)
-[펨코 핫딜 게시판](https://www.fmkorea.com/hotdeal)에서 특정 기간 등록된 글 중 가격이 무료인 상품을 소개하는 글만 모아 출력해주는 프로그램  
-추후 개선하여 알림 서비스로 개편할 예정
+[펨코 핫딜 게시판](https://www.fmkorea.com/hotdeal)에서 특정 기간 등록된 글 중 가격이 무료인 상품을 소개하는 글만 모아 전달해드립니다.  
+현재 디스코드 메시지 알림 서비스 제공중이며, 추후 카카오톡 채널 알림 서비스로도 제공 예정입니다.  
+[디스코드 채널 바로가기](https://discord.gg/Frr7mxvV85)
 
 ---
 ## Usage
@@ -28,6 +29,6 @@ python main.py
 ## Environment
 - Python
   - Version: 3.10.0
-  - Library: bs4, requests
+  - Library: bs4, requests, aiocron, discord
 - OS
   - Windows 10 64bit
