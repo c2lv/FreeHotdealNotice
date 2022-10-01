@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from utils import *
 from bs4 import BeautifulSoup
 import re
@@ -8,6 +8,7 @@ def scraping():
     finish = False
     i = 1
     now = datetime.now()
+    now += timedelta(hours=9)
 
     while True:
         response = get_requests(PROTOCOL_AND_DOMAIN + PATH, {'mid': 'hotdeal', 'page': i})
