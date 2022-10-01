@@ -2,7 +2,9 @@ from datetime import datetime, timedelta
 from utils import *
 from bs4 import BeautifulSoup
 import re
+import time
 
+# fmkorea hotdeal
 def scraping():
     ret = []
     finish = False
@@ -93,3 +95,87 @@ def scraping():
                 "error": "First response failed"
             })
             return ret
+
+# coolenjoy jirum2
+def scraping2():
+    ret = []
+    i = 1
+    post_num = 1
+    now = datetime.now()
+
+    while True:
+        finish = True
+        response = get_requests(f'https://coolenjoy.net/bbs/jirum2/p{i}')
+        if response.status_code == 200:
+            html = response.text
+            soup = BeautifulSoup(html, 'html.parser')
+            posts = soup.find('tbody').find_all('tr')
+            for post in posts:
+                td = post.find_all('td') # [분류(td_num), 제목(td_subject), 글쓴이(td_name_sv_use), 날짜(td_date), 조회, 추천(td_hit)]
+                td_date = remove_tab(td[3].text)
+                if td[0].text != '공지' and now.strftime("%y-%m-%d") == td_date:
+                    finish = False
+                    post_url = td[1].find('a')['href']
+
+                    response = get_requests(post_url)
+                    if response.status_code == 200:
+                        html = response.text
+                        soup = BeautifulSoup(html, 'html.parser')
+                        title = soup.find('h1', {"id": "bo_v_title"})
+                        title = title.text.strip()
+                        content = ''
+                        ps = soup.find('div', {"id": "bo_v_con"}).find_all('p')
+                        for p in ps:
+                            p = p.text
+                            if p != '':
+                                content += p
+                                content += '\n'
+                        related_url = soup.find('section', {"id": "bo_v_link"}).find('strong').text
+                        ret.append({
+                            "post_num": post_num,
+                            "title": title,
+                            "post_url": post_url,
+                            "related_url": related_url,
+                            "content": content
+                        })
+                        post_num += 1
+                        time.sleep(0.5) # Delay
+                    else:
+                        ret.append({
+                            "post_num": post_num,
+                            "error": ':warning: 실행 중 문제가 발생했습니다.\nSecond response failed'
+                        })
+                        return scraping2_2(now, ret)
+            if finish:
+                return scraping2_2(now, ret)
+            i += 1
+        else:
+            ret.append({
+                "post_num": post_num,
+                "error": ':warning: 실행 중 문제가 발생했습니다.\nFirst response failed'
+            })
+            return scraping2_2(now, ret)
+def scraping2_2(now, ret):
+    jirum2_message = []
+    message = f':star: {now.year}년 {now.month}월 {now.day}일 쿨엔조이 지름알뜰정보 이벤트 글 목록입니다.'
+    for info in ret:
+        message += f"\n\n===== {info['post_num']} =====\n"
+        if 'error' in info:
+            message += info['error']
+            break
+        else:
+            ''' 아래 에러 발생 가능성이 있어 본문 글자수 제한
+            discord.errors.HTTPException: 400 Bad Request (error code: 50035): Invalid Form Body
+            In content: Must be 2000 or fewer in length.
+            '''
+            c = info["content"]
+            if len(c) < 1500:
+                message += f':person_tipping_hand: {info["title"]}\n\n{c}\n'
+                message += f':link: {info["related_url"]}'
+            else:
+                message += f':person_tipping_hand: {info["title"]}\n\n'
+                message += f':face_with_raised_eyebrow: 본문이 길이 제한을 초과하여 생략되었습니다. 아래 링크에서 직접 확인해보세요.\n\n'
+                message += f':link: {info["post_url"]}'
+        jirum2_message.append(message)
+        message = ''
+    return jirum2_message

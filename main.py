@@ -5,7 +5,7 @@ from datetime import datetime
 from discord.ext import commands
 from utils import *
 from const import *
-from scraping import scraping
+from scraping import scraping, scraping2
 
 game = discord.Game("공지 정리")
 
@@ -40,6 +40,18 @@ async def main():
 
             # Send message to channel
             await ch_freehotdeal_fmkorea.send(embed=embed)
+    
+    @aiocron.crontab('1 15 * * *') # minute hour day month week second
+    async def jirum2():
+        # Get channel id
+        ch_jirum2 = bot.get_channel(CH_JIRUM2_ID)
+
+        # Get notice
+        jirum2_message = scraping2()
+
+        # Send message to channel
+        for message in jirum2_message:
+            await ch_jirum2.send(message)
     
     '''
     Commands
