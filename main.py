@@ -17,6 +17,7 @@ async def main():
     '''
     Loops
     '''
+    '''
     @aiocron.crontab('*/5 * * * *') # minute hour day month week second
     async def freeHotDealNotice():
         # Get channel id
@@ -40,7 +41,8 @@ async def main():
 
             # Send message to channel
             await ch_freehotdeal_fmkorea.send(embed=embed)
-    
+    '''
+
     @aiocron.crontab('1 15 * * *') # minute hour day month week second
     async def jirum2():
         # Get channel id

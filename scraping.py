@@ -94,9 +94,6 @@ def scraping():
             ret.append({
                 "error": f"{response.status_code}: First response failed"
             })
-            print("==== errorMsg start ====")
-            print(response.text)
-            print("==== errorMsg end ====")
             return ret
 
 # coolenjoy jirum2
