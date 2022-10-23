@@ -93,8 +93,9 @@ def scraping():
             i += 1
         else:
             ret.append({
-                "error": f"{response.status_code}: First response failed"
+                "error": f"{response.status_code}: First response failed\n{response.content.decode('utf-8')}"
             })
+            print(response.content.decode('utf-8'))
             return ret
 
 # coolenjoy jirum2
