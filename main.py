@@ -29,7 +29,7 @@ async def main():
         for d in freehotdeal_fmkorea_message:
             if 'error' in d:
                 embed = discord.Embed(description=d['error'], color=0xFF0000)
-                embed.set_author(name=':warning:실행중 문제가 발생했습니다.')
+                embed.set_author(name='실행중 문제가 발생했습니다.')
             else:
                 description = f"쇼핑몰: {d['mall']} / 가격: {d['price']} / 배송: {d['delivery_fee']}\n" \
                     + f"카테고리: {d['category']} / 관련 URL 바로가기: {d['related_url']}\n" \

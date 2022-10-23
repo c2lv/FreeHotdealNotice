@@ -84,7 +84,7 @@ def scraping():
                             })
                         else:
                             ret.append({
-                                "error": "Second response failed"
+                                "error": f"{response.status_code}: Second response failed"
                             })
                             return ret
             if finish:
@@ -92,7 +92,7 @@ def scraping():
             i += 1
         else:
             ret.append({
-                "error": "First response failed"
+                "error": f"{response.status_code}: First response failed"
             })
             return ret
 
@@ -143,7 +143,7 @@ def scraping2():
                     else:
                         ret.append({
                             "post_num": post_num,
-                            "error": ':warning: 실행 중 문제가 발생했습니다.\nSecond response failed'
+                            "error": f':warning: 실행 중 문제가 발생했습니다.\n{response.status_code}: Second response failed'
                         })
                         return scraping2_2(now, ret)
             if finish:
@@ -152,7 +152,7 @@ def scraping2():
         else:
             ret.append({
                 "post_num": post_num,
-                "error": ':warning: 실행 중 문제가 발생했습니다.\nFirst response failed'
+                "error": f':warning: 실행 중 문제가 발생했습니다.\n{response.status_code}: First response failed'
             })
             return scraping2_2(now, ret)
 def scraping2_2(now, ret):
