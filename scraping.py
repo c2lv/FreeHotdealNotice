@@ -84,18 +84,19 @@ def scraping():
                             })
                         else:
                             ret.append({
-                                "error": f"{response.status_code}: Second response failed\n{response.content.decode('utf-8')}"
+                                "error": f"{response.status_code}: Second response failed"
                             })
-                            print(response.content.decode('utf-8'))
                             return ret
             if finish:
                 return ret
             i += 1
         else:
             ret.append({
-                "error": f"{response.status_code}: First response failed\n{response.content.decode('utf-8')}"
+                "error": f"{response.status_code}: First response failed"
             })
-            print(response.content.decode('utf-8'))
+            print("==== errorMsg start ====")
+            print(response.text)
+            print("==== errorMsg end ====")
             return ret
 
 # coolenjoy jirum2
